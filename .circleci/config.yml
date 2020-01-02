@@ -4,7 +4,7 @@ parameters:
     type: string
     default: "-Prevision=<< pipeline.git.revision >>"
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/openjdk:11.0.5-jdk-stretch
     steps:
@@ -26,6 +26,23 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+  build:
+    docker:
+      - image: circleci/openjdk:11.0.5-jdk-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Publish Docker image with Jib
           command: ./gradlew jib << pipeline.parameters.gradle-args >>
+workflows:
+  version: 2
+  test-and-build:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
