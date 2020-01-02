@@ -22,3 +22,6 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+      - run:
+          name: Publish Docker image with Jib
+          command: ./gradlew jib
