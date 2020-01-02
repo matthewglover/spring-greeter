@@ -1,4 +1,8 @@
 version: 2.1
+parameters:
+  gradle-args:
+    type: string
+    default: "-Prevision=<< pipeline.git.revision >>"
 jobs:
   build:
     docker:
@@ -11,7 +15,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Run tests
-          command: ./gradlew check
+          command: ./gradlew check << pipeline.parameters.gradle-args >>
       - run:
           name: Save test results
           command: |
@@ -24,4 +28,4 @@ jobs:
           path: ~/test-results/junit
       - run:
           name: Publish Docker image with Jib
-          command: ./gradlew jib
+          command: ./gradlew jib << pipeline.parameters.gradle-args >>

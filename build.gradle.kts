@@ -42,10 +42,18 @@ tasks.withType<KotlinCompile> {
 }
 
 jib {
+    val version: String by project
+    val revision: String by project
     val dockerHubPassword: String by project
 
     to {
-        image = "matt8thlight/greet"
+        image = "matt8thlight/greet:$version-$revision"
+        container {
+            jvmFlags = listOf("-Xms512m", "-Xdebug")
+            mainClass = "com.example.demo.DemoApplication"
+            args = listOf<String>()
+            ports = listOf("8080/tcp")
+        }
         auth {
             username = "matt8thlight"
             password = dockerHubPassword
