@@ -24,6 +24,11 @@ dependencies {
     }
 }
 
+tasks.withType<Wrapper> {
+    gradleVersion = "6.0"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
